@@ -10,7 +10,7 @@ COPY ProEventos.sln ./
 
 # Para ProEventos.API:
 # A sua pasta no host é ProEventos.API, mas o .sln espera ProEventos.Api (conforme o erro)
-COPY ProEventos.API/ProEventos.API.csproj ./ProEventos.Api/
+COPY ProEventos.API/ProEventos.API.csproj ./ProEventos.API/
 
 # Para os outros projetos (assumindo que o .sln os referencia com o mesmo casing dos nomes das pastas)
 COPY ProEventos.Application/ProEventos.Application.csproj ./ProEventos.Application/
@@ -23,7 +23,7 @@ COPY ProEventos.Tests/ProEventos.Tests.csproj ./ProEventos.Tests/
 RUN dotnet restore "ProEventos.sln"
 
 # Copie todo o restante do código fonte dos projetos para dentro do workdir /app
-COPY ProEventos.API/ ./ProEventos.Api/ 
+COPY ProEventos.API/ ./ProEventos.API/ 
 COPY ProEventos.Application/ ./ProEventos.Application/
 COPY ProEventos.Domain/ ./ProEventos.Domain/
 COPY ProEventos.Persistence/ ./ProEventos.Persistence/
@@ -31,7 +31,7 @@ COPY ProEventos.Tests/ ./ProEventos.Tests/
 
 # Publique a aplicação ProEventos.API
 # O caminho para o csproj da API deve usar o nome da pasta criada no container (ProEventos.Api)
-RUN dotnet publish "ProEventos.Api/ProEventos.API.csproj" -c Release -o out
+RUN dotnet publish "ProEventos.API/ProEventos.API.csproj" -c Release -o out
 
 # Estágio 2: Imagem de Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
