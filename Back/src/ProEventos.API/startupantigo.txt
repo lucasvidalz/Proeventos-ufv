@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore; // Adicionado para .Migrate() e DbContext, se não estiver globalmente
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging; // Adicionado para ILogger
 using Microsoft.OpenApi.Models;
 using ProEventos.Application;
 using ProEventos.Application.Contratos;
 using ProEventos.Persistence;
-using ProEventos.Persistence.Contextos; // Namespace do seu ProEventosContext
+using ProEventos.Persistence.Contextos;
 using ProEventos.Persistence.Contratos;
 using AutoMapper;
 using System;
@@ -131,43 +130,16 @@ namespace ProEventos.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(
-            IApplicationBuilder app,
-            IWebHostEnvironment env,
-            ProEventosContext dbContext,  // INJETADO: Seu DbContext
-            ILogger<Startup> logger)      // INJETADO: Logger
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // --- INÍCIO DO CÓDIGO DE MIGRAÇÃO ADICIONADO ---
-            try
-            {
-                if (dbContext != null)
-                {
-                    dbContext.Database.Migrate(); // Aplica migrações pendentes. Cria o BD se não existir.
-                    logger.LogInformation("Migrações do banco de dados aplicadas com sucesso ou banco de dados já atualizado.");
-                }
-                else
-                {
-                     logger.LogError("ProEventosContext (dbContext) não pôde ser resolvido/injetado. Migrações não aplicadas.");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Ocorreu um erro ao aplicar as migrações do banco de dados.");
-                // Em um cenário de produção, você pode querer que a aplicação pare se as migrações falharem:
-                // throw;
-            }
-            // --- FIM DO CÓDIGO DE MIGRAÇÃO ADICIONADO ---
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProEventos.API v1"));
             }
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProEventos.API v1"));
-            // Se não estiver usando HTTPS diretamente no Kestrel dentro do container,
-            // você pode comentar a linha abaixo para evitar o warning de redirecionamento.
-            // app.UseHttpsRedirection();
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

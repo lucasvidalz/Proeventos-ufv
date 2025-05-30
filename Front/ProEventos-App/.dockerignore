@@ -1,0 +1,5 @@
+node_modules
+dist
+.git
+.gitignore
+# Adicione outros arquivos/pastas como .vscode, etc.
